@@ -1,13 +1,12 @@
 <?php
-$servidor   = "localhost";
-$usuario    = "root";
-$contrasena = "";           // En XAMPP local siempre está vacío
-$base_datos = "arte_db";
-
-$conexion = mysqli_connect($servidor, $usuario, $contrasena, $base_datos);
-
-if (!$conexion) {
-    die("❌ Error de conexión: " . mysqli_connect_error());
+try {
+    $pdo = new PDO(
+        "mysql:host=127.0.0.1;port=3307;dbname=arte_db;charset=utf8mb4",
+        "root",
+        ""
+    );
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("❌ Error de conexión: " . $e->getMessage());
 }
-// Si llega aquí, ¡todo bien! No mostramos nada.
-?>
