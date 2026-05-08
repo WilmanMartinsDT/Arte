@@ -1,15 +1,28 @@
 <?php
 require_once 'conexion.php';
 
-$stmt = $pdo->query("
-    SELECT o.ObraID, o.Titulo, o.AnioCreacion,
-           CONCAT(a.Nombre, ' ', a.Apellido) AS Autor,
-           e.Nombre AS Estilo
-    FROM obras o
-    JOIN autores a ON o.AutorID = a.AutorID
-    LEFT JOIN estilos e ON o.EstiloID = e.EstiloID
-    ORDER BY o.Titulo ASC
-");
+$buscar = trim($_GET['buscar'] ?? '');
+$filtroEstilo = $_GET['estilo'] ?? '';
+
+$estilos = $pdo->query("SELECT EstiloID, Nombre FROM estilos ORDER BY Nombre")->fetchAll();
+
+$sql = "SELECT * FROM vista_obras_completa WHERE 1=1";
+$params = [];
+
+if (!empty($buscar)) {
+    $sql .= " AND (Titulo LIKE ? OR Autor LIKE ?)";
+    $params[] = "%$buscar%";
+    $params[] = "%$buscar%";
+}
+
+if (!empty($filtroEstilo)) {
+    $sql .= " AND Estilo = ?";
+    $params[] = $filtroEstilo;
+}
+
+$sql .= " ORDER BY Titulo ASC";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $obras = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -22,17 +35,40 @@ $obras = $stmt->fetchAll();
     <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
+<?php require_once 'navbar.php'; ?>
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="titulo-principal">🎨 Galería de Arte</h1>
-        <div>
-            <a href="nuevaObra.php" class="btn btn-primary me-2">+ Nueva Obra</a>
-            <a href="nuevoAutor.php" class="btn btn-secondary">+ Nuevo Autor</a>
+    
+    <!-- Buscador y filtro -->
+    <form method="GET" class="row g-2 mb-4">
+        <div class="col-md-5">
+            <input type="text" name="buscar" class="form-control"
+                   placeholder="🔍 Buscar por título o autor..."
+                   value="<?= htmlspecialchars($buscar) ?>">
         </div>
-    </div>
+        <div class="col-md-4">
+            <select name="estilo" class="form-select">
+                <option value="">— Todos los estilos —</option>
+                <?php foreach ($estilos as $e): ?>
+                    <option value="<?= htmlspecialchars($e['Nombre']) ?>"
+                            <?= ($filtroEstilo === $e['Nombre']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($e['Nombre']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+        <?php if (!empty($buscar) || !empty($filtroEstilo)): ?>
+            <div class="col-md-1">
+                <a href="index.php" class="btn btn-outline-secondary w-100">✕</a>
+            </div>
+        <?php endif; ?>
+    </form>
 
+    <!-- Tabla de obras -->
     <?php if (empty($obras)): ?>
-        <div class="alert alert-info">No hay obras registradas todavía.</div>
+        <div class="alert alert-info">No se encontraron obras.</div>
     <?php else: ?>
         <table class="table table-striped table-hover align-middle">
             <thead class="table-dark">
@@ -58,7 +94,11 @@ $obras = $stmt->fetchAll();
             <?php endforeach; ?>
             </tbody>
         </table>
+        <p class="text-muted">
+            <?= count($obras) ?> obra<?= count($obras) !== 1 ? 's' : '' ?> encontrada<?= count($obras) !== 1 ? 's' : '' ?>
+        </p>
     <?php endif; ?>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
+<?php require_once 'navbar.php'; ?>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="titulo-principal">👤 Nuevo Autor</h1>

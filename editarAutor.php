@@ -1,6 +1,7 @@
 <?php
 require_once 'conexion.php';
 
+
 $id = $_GET['id'] ?? null;
 if (!$id) { header("Location: index.php"); exit; }
 
@@ -68,16 +69,13 @@ $obras = $stmtObras->fetchAll();
     <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
+<?php require_once 'navbar.php'; ?>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="titulo-principal">✏️ Editar Autor</h1>
-        <div>
-            <a href="index.php" class="btn btn-secondary me-2">← Volver</a>
-            <form method="POST" class="d-inline"
-                  onsubmit="return confirm('¿Seguro que quieres borrar este autor?')">
-                <button type="submit" name="borrar" class="btn btn-danger">🗑️ Borrar</button>
-            </form>
-        </div>
+        <form method="POST" class="d-inline" onsubmit="return confirm('¿Seguro que quieres borrar este autor?')">
+            <button type="submit" name="borrar" class="btn btn-danger">🗑️ Borrar</button>
+        </form>
     </div>
 
     <?php if (!empty($errores)): ?>
