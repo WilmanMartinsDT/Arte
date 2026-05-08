@@ -1,9 +1,9 @@
 <?php
 $paginaActual = basename($_SERVER['PHP_SELF']);
 ?>
-<nav class="navbar navbar-expand-lg mb-4" style="background-color:#2c2c2c;">
+<nav class="navbar navbar-expand-lg mb-4">
     <div class="container">
-        <a class="navbar-brand text-white fw-bold" href="index.php">🎨 Galería de Arte</a>
+        <a class="navbar-brand" href="index.php">🎨 Galería de Arte</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
             <span class="navbar-toggler-icon" style="filter:invert(1)"></span>
         </button>
@@ -22,15 +22,21 @@ $paginaActual = basename($_SERVER['PHP_SELF']);
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="museos.php"
+                    <a href="museos.php"    
                        class="btn btn-sm <?= $paginaActual === 'museos.php' ? 'btn-light' : 'btn-outline-light' ?>">
                         🏛️ Museos
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="nuevoAutor.php"
-                       class="btn btn-sm <?= $paginaActual === 'nuevoAutor.php' ? 'btn-light' : 'btn-outline-light' ?>">
+                    <a href="autores.php"
+                       class="btn btn-sm <?= $paginaActual === 'autores.php' ? 'btn-light' : 'btn-outline-light' ?>">
                         👤 Autores
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="nuevaObra.php"
+                       class="btn btn-sm btn-danger <?= $paginaActual === 'nuevaObra.php' ? 'active' : '' ?>">
+                        + Nueva Obra
                     </a>
                 </li>
             </ul>
